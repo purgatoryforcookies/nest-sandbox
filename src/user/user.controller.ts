@@ -30,8 +30,8 @@ export class UserController {
       throw new BadRequestException('Received empty body');
     }
 
-    if (dto.email === user.email) {
-      delete dto.email;
+    if (dto.username === user.username) {
+      delete dto.username;
     }
     const editedUser = await this.userService.editUser(user.id, dto);
 

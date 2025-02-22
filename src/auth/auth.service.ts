@@ -1,4 +1,8 @@
-import { ForbiddenException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  ForbiddenException,
+  Injectable,
+} from '@nestjs/common';
 import { DaoService } from 'src/dao/dao.service';
 import { AuthDto } from './dto';
 import * as argon from 'argon2';
@@ -22,16 +26,16 @@ export class AuthService {
     try {
       const user = await this.dao.user.create({
         data: {
-          email: dto.email,
+          username: dto.username,
           hash: hashedPassword,
         },
       });
 
-      return this.signToken(user.id, user.email);
+      return this.signToken(user.id, user.username);
     } catch (error) {
       if (error instanceof PrismaClientKnownRequestError) {
         if (error.code === UNIQUE_VIOLATION_ERROR) {
-          throw new ForbiddenException('Email is already registered');
+          throw new BadRequestException('Username is already registered');
         }
       }
       throw error;
@@ -41,7 +45,7 @@ export class AuthService {
   async signin(dto: AuthDto) {
     const user = await this.dao.user.findFirst({
       where: {
-        email: dto.email,
+        username: dto.username,
       },
     });
 
@@ -55,13 +59,13 @@ export class AuthService {
       throw new ForbiddenException('Invalid login');
     }
 
-    return this.signToken(user.id, user.email);
+    return this.signToken(user.id, user.username);
   }
 
-  signToken(userId: number, email: string) {
+  signToken(userId: number, username: string) {
     const payload = {
       sub: userId,
-      email: email,
+      username: username,
     };
 
     const expiry = String(this.config.getOrThrow('JWT_EXPIRY_MIN')) + 'm';
