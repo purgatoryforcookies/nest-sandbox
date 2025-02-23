@@ -3,8 +3,8 @@ import {
   Body,
   Controller,
   Get,
-  HttpStatus,
   Patch,
+  Req,
   Res,
   UseGuards,
 } from '@nestjs/common';
@@ -13,10 +13,10 @@ import { GetUser } from 'src/auth/decorator';
 import { JwtGuard } from 'src/auth/guard';
 import { EditUserDto } from './dto';
 import { UserService } from './user.service';
-import { Response } from 'express';
+import { Request, Response } from 'express';
 
 @UseGuards(JwtGuard)
-@Controller('user')
+@Controller('api/user')
 export class UserController {
   constructor(private userService: UserService) {}
 
@@ -39,7 +39,10 @@ export class UserController {
   }
 
   @Get('me')
-  getMe(@GetUser() user: User) {
-    return user;
+  getMe(@GetUser() user: User, @Req() req: Request) {
+    return {
+      user: user,
+      token: req?.cookies?.token,
+    };
   }
 }

@@ -9,8 +9,12 @@ const PRISMA_NOT_FOUND_CODE = 'P2025';
 export class BookmarkService {
   constructor(private dao: DaoService) {}
 
-  async getAll() {
-    return this.dao.bookmark.findMany();
+  async getAll(id: number) {
+    return this.dao.bookmark.findMany({
+      where: {
+        user_id: id,
+      },
+    });
   }
 
   async get(id: number) {
@@ -37,16 +41,25 @@ export class BookmarkService {
   }
 
   async edit(id: number, dto: EditBookmarkDto) {
-    const result = await this.dao.bookmark.update({
-      where: {
-        id: id,
-      },
-      data: {
-        ...dto,
-      },
-    });
+    try {
+      const result = await this.dao.bookmark.update({
+        where: {
+          id: id,
+        },
+        data: {
+          ...dto,
+        },
+      });
 
-    return result;
+      return result;
+    } catch (error) {
+      if (error instanceof PrismaClientKnownRequestError) {
+        if (error.code === PRISMA_NOT_FOUND_CODE) {
+          throw new NotFoundException();
+        }
+      }
+      throw error;
+    }
   }
 
   async delete(id: number) {
@@ -64,5 +77,30 @@ export class BookmarkService {
       }
       throw error;
     }
+  }
+
+  /**
+   * Adds a few example bookmarks for new users
+   */
+  boilerplate(userId: number) {
+    return this.dao.bookmark.createMany({
+      data: [
+        {
+          title: 'Example bookmark',
+          link: 'https://google.com',
+          user_id: userId,
+        },
+        {
+          title: 'Example bookmark',
+          link: 'https://yahoo.com',
+          user_id: userId,
+        },
+        {
+          title: 'Example bookmark',
+          link: 'https://youtube.com',
+          user_id: userId,
+        },
+      ],
+    });
   }
 }

@@ -24,6 +24,7 @@ export class JwtStrategy extends PassportStrategy(Strategy, 'auth0') {
   }
 
   async validate(payload: any) {
+    console.log(payload);
     const user = await this.dao.user.findFirst({
       where: {
         id: payload.sub,

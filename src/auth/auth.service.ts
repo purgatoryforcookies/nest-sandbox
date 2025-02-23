@@ -9,6 +9,7 @@ import * as argon from 'argon2';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
 import { JwtService } from '@nestjs/jwt';
 import { ConfigService } from '@nestjs/config';
+import { BookmarkService } from 'src/bookmark/bookmark.service';
 
 const UNIQUE_VIOLATION_ERROR = 'P2002';
 
@@ -18,6 +19,7 @@ export class AuthService {
     private dao: DaoService,
     private jtw: JwtService,
     private config: ConfigService,
+    private bookmarkService: BookmarkService,
   ) {}
 
   async signup(dto: AuthDto) {
@@ -30,6 +32,7 @@ export class AuthService {
           hash: hashedPassword,
         },
       });
+      await this.bookmarkService.boilerplate(user.id);
 
       return this.signToken(user.id, user.username);
     } catch (error) {

@@ -9,19 +9,19 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
-import { JwtGuard } from 'src/auth/guard';
 import { BookmarDto, EditBookmarkDto } from './dto';
 import { BookmarkService } from './bookmark.service';
 import { GetUser } from 'src/auth/decorator';
+import { JwtGuard } from 'src/auth/guard';
 
 @UseGuards(JwtGuard)
-@Controller('bookmark')
+@Controller('api/bookmark')
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
 
   @Get()
-  async getAll() {
-    return await this.bookmarkService.getAll();
+  async getAll(@GetUser('id') userId: number) {
+    return await this.bookmarkService.getAll(userId);
   }
 
   @Get(':id')
