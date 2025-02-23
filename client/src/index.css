@@ -1,4 +1,6 @@
 @import 'tailwindcss';
+
+@custom-variant dark (&:is(.dark *));
 @config "../tailwind.config.js";
 
 @layer base {
@@ -61,7 +63,45 @@
   * {
     @apply border-border;
   }
+  #root {
+    height: 100vh;
+  }
+  html {
+    background-color: black;
+  }
+
   body {
     @apply bg-background text-foreground;
   }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+    scrollbar-gutter: stable;
+  }
+}
+
+/* width */
+::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #ececec13;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #174f37;
+  border-radius: 10px;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #36ba81;
 }

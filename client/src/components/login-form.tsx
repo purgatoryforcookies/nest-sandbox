@@ -1,25 +1,60 @@
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
-import { Label } from "./ui/label"
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from './ui/label';
+import { useForm } from 'react-hook-form';
+import { login } from '@/service/api';
 
+type LoginFormProps = {
+  toggleSignUp: () => void;
+};
 
-export function LoginForm({
-  className,
-  ...props
-}: React.ComponentPropsWithoutRef<"form">) {
+type FormValues = {
+  username: string;
+  password: string;
+};
+
+export function LoginForm({ toggleSignUp }: LoginFormProps) {
+  const { register, handleSubmit, formState, setError } = useForm<FormValues>({
+    defaultValues: {
+      username: 'hello',
+      password: 'secret',
+    },
+  });
+  const { errors } = formState;
+
+  const onSubmit = async (formData: FormValues) => {
+    try {
+      await login(formData);
+    } catch (error) {
+      if (error instanceof Response) {
+        const err = await error.json();
+        setError('root', { message: err.message });
+      } else {
+        setError('root', { message: 'Something went wrong' });
+      }
+    }
+  };
+
   return (
-    <form className={cn("flex flex-col gap-6", className)} {...props}>
+    <form className="flex flex-col gap-6" onSubmit={handleSubmit(onSubmit)}>
       <div className="flex flex-col items-center gap-2 text-center">
         <h1 className="text-2xl font-bold">Login to your account</h1>
         <p className="text-balance text-sm text-muted-foreground">
-          Enter your email below to login to your account
+          Enter your username below to login to your account
         </p>
       </div>
       <div className="grid gap-6">
         <div className="grid gap-2">
-          <Label htmlFor="email">Email</Label>
-          <Input id="email" type="email" placeholder="m@example.com" required />
+          <Label htmlFor="username">Username</Label>
+          <Input
+            id="username"
+            type="username"
+            placeholder="m@example.com"
+            required
+            {...register('username', {
+              required: { value: true, message: 'Username is required' },
+            })}
+          />
         </div>
         <div className="grid gap-2">
           <div className="flex items-center">
@@ -31,13 +66,24 @@ export function LoginForm({
               Forgot your password?
             </a>
           </div>
-          <Input id="password" type="password" required />
+          <Input
+            id="password"
+            type="password"
+            required
+            autoComplete="current-password"
+            {...register('password', {
+              required: {
+                value: true,
+                message: 'Password is required',
+              },
+            })}
+          />
         </div>
         <Button type="submit" className="w-full">
           Login
         </Button>
         <div className="relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border">
-          <span className="relative z-10 bg-background px-2 text-muted-foreground">
+          <span className="relative z-10 bg-inherit px-2 text-muted-foreground">
             Or continue with
           </span>
         </div>
@@ -51,12 +97,20 @@ export function LoginForm({
           Login with GitHub
         </Button>
       </div>
-      <div className="text-center text-sm">
-        Don&apos;t have an account?{" "}
-        <a href="#" className="underline underline-offset-4">
+      {errors.root ? (
+        <p className="text-red-500">{errors.root.message}</p>
+      ) : null}
+      <div className="text-center text-sm flex justify-center items-center gap-1.5">
+        Don&apos;t have an account?{' '}
+        <Button
+          variant={'link'}
+          type="button"
+          onClick={toggleSignUp}
+          className="underline underline-offset-4 p-0"
+        >
           Sign up
-        </a>
+        </Button>
       </div>
     </form>
-  )
+  );
 }
