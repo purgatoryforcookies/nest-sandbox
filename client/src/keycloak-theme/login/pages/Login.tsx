@@ -78,7 +78,7 @@ export default function Login(
                             id={`social-${p.alias}`}
                             type="button"
                             href={p.loginUrl}
-                            className="m-auto"
+                            className="w-full flex justify-center"
                           >
                             <div className="grid grid-cols-[25px_70px] items-center">
                               {Icon(p.alias)}

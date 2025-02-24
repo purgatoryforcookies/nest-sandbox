@@ -55,8 +55,8 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
 
   return (
     <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-      <div className="grid min-h-svh lg:grid-cols-2 bg-gradient-to-r from-[#0a0a0a] to-[#21190d] to-99%">
-        <div className="flex flex-col gap-4 p-6 md:p-10">
+      <div className="grid min-h-svh lg:grid-cols-2 bg-gradient-to-r from-[#0a0a0a] to-[#21190d] to-99% ">
+        <div className="flex flex-col gap-4 p-6 md:p-10 relative">
           <div className="flex justify-center gap-2 md:justify-start">
             <a href="#" className="flex items-center gap-2 font-medium">
               <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
@@ -103,7 +103,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
                   return (
                     <div className="flex flex-col justify-end items-end gap-2">
                       <div className="col-md-10">{node}</div>
-                      <div className="text-primary/70 text-sm">
+                      <div className="text-primary/70 text-sm absolute right-4 top-3">
                         <span className="subtitle">
                           <span className="required">*</span>
                           {msg('requiredFields')}
