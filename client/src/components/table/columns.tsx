@@ -24,6 +24,9 @@ export const columns: ColumnDef<Bookmark>[] = [
     accessorKey: 'title',
     header: 'Title',
     size: 100,
+    cell: ({ row, table }) => (
+      <EditableCell row={row} table={table} accessor="title" />
+    ),
   },
   {
     accessorKey: 'link',
