@@ -1,42 +1,45 @@
-import { Body, Controller, Get, Post, Res } from '@nestjs/common';
-import { AuthService } from './auth.service';
-import { AuthDto } from './dto';
-import { Response } from 'express';
-import { BookmarkService } from 'src/bookmark/bookmark.service';
+import {
+  Controller,
+  Get,
+  Next,
+  Post,
+  Req,
+  Res,
+  UseGuards,
+} from '@nestjs/common';
+import { NextFunction, Request, Response } from 'express';
+import { LoginGuard } from './guard/login.guard';
+import { ConfigService } from '@nestjs/config';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(private config: ConfigService) {}
 
-  @Post('signup')
-  async signup(
-    @Body() dto: AuthDto,
-    @Res({ passthrough: true }) res: Response,
-  ) {
-    const token = await this.authService.signup(dto);
-    res.cookie('token', `${token}`, { httpOnly: true, sameSite: 'strict' });
+  @Get('login')
+  @UseGuards(LoginGuard)
+  async login() {}
+
+  @Get('callback')
+  @UseGuards(LoginGuard)
+  loginCallback(@Res() res: Response) {
     res.redirect('/');
-    return;
   }
 
-  @Post('login')
-  async signin(
-    @Body() dto: AuthDto,
-    @Res({ passthrough: true }) res: Response,
+  @Post('logout')
+  async logout(
+    @Res({ passthrough: false }) res: Response,
+    @Req() req: Request,
+    @Next() next: NextFunction,
   ) {
-    const token = await this.authService.signin(dto);
-    res.cookie('token', `${token}`, {
-      httpOnly: true,
-      sameSite: 'strict',
+    req.logOut((err) => {
+      if (err) return next(err);
+      const logOutUrl = this.config.get('KEYCLOAK_LOGOUT');
+      if (!logOutUrl) {
+        console.log('Warning! No logout url set, defaulting to home.');
+        res.redirect('/');
+        return;
+      }
+      res.redirect(logOutUrl);
     });
-    res.redirect('/');
-    return;
-  }
-
-  @Get('logout')
-  async logout(@Res({ passthrough: true }) res: Response) {
-    res.clearCookie('token');
-    res.redirect('/login');
-    return;
   }
 }

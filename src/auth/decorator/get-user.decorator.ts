@@ -1,9 +1,11 @@
 import { createParamDecorator, ForbiddenException } from '@nestjs/common';
 import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
-import { User } from '@prisma/client';
 
 export const GetUser = createParamDecorator(
-  (field: keyof User | undefined, ctx: ExecutionContextHost) => {
+  (
+    field: keyof Express.User['user'] | undefined,
+    ctx: ExecutionContextHost,
+  ) => {
     const request = ctx.switchToHttp().getRequest<Express.Request>();
 
     if (!request.user) {
@@ -11,8 +13,8 @@ export const GetUser = createParamDecorator(
     }
 
     if (field) {
-      return request.user[field];
+      return request.user.user[field];
     }
-    return request.user;
+    return request.user.user;
   },
 );

@@ -5,20 +5,22 @@ import { BookmarkModule } from './bookmark/bookmark.module';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { DaoModule } from './dao/dao.module';
 import { ProxyController } from './proxy/proxy.controller';
+import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
 @Module({
   imports: [
+    ConfigModule.forRoot({ isGlobal: true }),
     AuthModule,
     UserModule,
     BookmarkModule,
-    ConfigModule.forRoot({ isGlobal: true }),
     DaoModule,
-    // ServeStaticModule.forRoot({
-    //   rootPath: join(__dirname, '..', 'client', 'dist'),
-    // }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'client', 'dist'),
+    }),
   ],
-  controllers: [ProxyController],
+  // controllers: [ProxyController],
+  providers: [AppService],
 })
 export class AppModule {}

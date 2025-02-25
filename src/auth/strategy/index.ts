@@ -1,1 +1,2 @@
-export * from './jwt.strategy';
+export * from './oidc.strategy';
+export * from './oidc_pkce.strategy';

@@ -12,15 +12,14 @@ import {
 import { BookmarDto, EditBookmarkDto } from './dto';
 import { BookmarkService } from './bookmark.service';
 import { GetUser } from 'src/auth/decorator';
-import { JwtGuard } from 'src/auth/guard';
+import { LoginGuard } from 'src/auth/guard/login.guard';
 
-@UseGuards(JwtGuard)
 @Controller('api/bookmark')
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
 
   @Get()
-  async getAll(@GetUser('id') userId: number) {
+  async getAll(@GetUser('sub') userId: string) {
     return await this.bookmarkService.getAll(userId);
   }
 
@@ -30,7 +29,7 @@ export class BookmarkController {
   }
 
   @Post()
-  async create(@GetUser('id') id: number, @Body() dto: BookmarDto) {
+  async create(@GetUser('sub') id: string, @Body() dto: BookmarDto) {
     return this.bookmarkService.add(id, dto);
   }
 

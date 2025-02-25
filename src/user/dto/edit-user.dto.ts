@@ -1,13 +1,20 @@
-import { IsOptional, IsString } from 'class-validator';
+import { IsArray, IsOptional, IsString } from 'class-validator';
 
 export class EditUserDto {
   @IsString()
   @IsOptional()
+  displayName?: string;
+  @IsString()
+  @IsOptional()
   username?: string;
+
+  @IsArray()
+  @IsOptional()
+  emails?: { value: string }[];
   @IsString()
   @IsOptional()
-  first_name?: string;
+  familyName?: string;
   @IsString()
   @IsOptional()
-  last_name?: string;
+  givenName?: string;
 }
