@@ -7,7 +7,7 @@ function App() {
     <div className="flex flex-col h-full justify-between">
       <Header />
       <div className="flex justify-center overflow-hidden">
-        <div className="w-full mx-20 py-2 max-w-[1200px]">
+        <div className="w-full mx-20 max-w-[1200px]">
           <Outlet />
         </div>
       </div>

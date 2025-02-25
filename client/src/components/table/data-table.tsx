@@ -80,7 +80,7 @@ export function DataTable<TData, TValue>({
     <div>
       <div className="rounded-md border">
         <p className="text-center py-3 text-primary/70">Bookmarks</p>
-        <div className="h-[60vh] relative overflow-auto">
+        <div className="h-[50vh] relative overflow-auto">
           <Table>
             <TableHeader className="sticky top-0 bg-card">
               {table.getHeaderGroups().map((headerGroup) => (

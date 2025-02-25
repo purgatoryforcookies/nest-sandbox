@@ -1,32 +1,69 @@
 import { getMe } from '@/service/api';
-import { useEffect, useState } from 'react';
-import { Navigate, Outlet } from 'react-router';
+import { useContext, createContext, useState, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router';
 
-export const PrivateRoute = () => {
-  const [isLoading, setIsloading] = useState(true);
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
+type MeType = {
+  sub: string;
+  email_verified?: boolean;
+  name?: string;
+  preferred_username?: string;
+  given_name?: string;
+  family_name?: string;
+  email?: string;
+};
+
+type ContextType = {
+  user: MeType | null;
+  logOut: () => void;
+};
+
+const AuthContext = createContext<ContextType>({
+  user: null,
+  logOut: () => {},
+});
+
+const AuthProvider = () => {
+  const [user, setUser] = useState<MeType | null>(null);
+  const navigate = useNavigate();
+
   useEffect(() => {
     const get = async () => {
-      setIsloading(true);
       try {
-        await getMe();
-        setIsAuthenticated(true);
-      } catch {
-        setIsAuthenticated(false);
-      } finally {
-        setIsloading(false);
+        const response = await getMe<MeType>();
+        setUser(response);
+      } catch (error) {
+        console.error(error);
       }
     };
     get();
   }, []);
 
-  if (isLoading) {
-    return <p>Loading...</p>;
-  }
+  const logOut = () => {
+    setUser(null);
+    navigate('/auth/logout');
+  };
 
-  if (isAuthenticated) {
-    return <Outlet />;
-  }
+  return (
+    <AuthContext.Provider value={{ user, logOut }}>
+      {!user ? (
+        <div className="size-full flex justify-center items-center ">
+          <div className="relative px-4">
+            Loading
+            <span
+              className="absolute inline-flex left-0 top-[9px] size-2 animate-ping 
+            duration-[1500ms] rounded-full bg-white opacity-95"
+            ></span>
+          </div>
+        </div>
+      ) : (
+        <Outlet />
+      )}
+    </AuthContext.Provider>
+  );
+};
 
-  return <Navigate to="/login" />;
+export default AuthProvider;
+
+export const useAuth = () => {
+  return useContext(AuthContext);
 };

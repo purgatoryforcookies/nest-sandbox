@@ -1,4 +1,5 @@
 import { Link } from 'react-router';
+import { Button } from './ui/button';
 
 const Header = () => {
   return (
@@ -22,12 +23,11 @@ const Header = () => {
             </Link>
           </li>
           <li>
-            <a
-              href={'/auth/logout'}
-              className="hover:text-primary hover:underline"
-            >
-              Logout
-            </a>
+            <form action="/auth/logout" method="POST">
+              <Button type="submit" variant={'link'}>
+                Logout
+              </Button>
+            </form>
           </li>
         </ul>
       </div>

@@ -32,7 +32,7 @@ export function BookmarkPage() {
   }, []);
 
   return (
-    <div className="size-full my-5 ">
+    <div>
       {!loading ? (
         <DataTable columns={columns} data={bookmarks} rowkey="id" />
       ) : (

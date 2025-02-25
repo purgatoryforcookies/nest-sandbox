@@ -7,26 +7,25 @@ import ProfilePage from './home/profile.tsx';
 import { BookmarkPage } from './home/bookmarks.tsx';
 import AboutPage from './about/page.tsx';
 import NotFoundPage from './error/404.tsx';
-import { PrivateRoute } from './login/privateRoute.tsx';
+import AuthProvider from './login/privateRoute.tsx';
 
 export default function AppEntrypoint() {
   return (
     <StrictMode>
-      <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
-        <BrowserRouter>
+      <BrowserRouter>
+        <ThemeProvider defaultTheme="dark" storageKey="vite-ui-theme">
           <Routes>
-            <Route element={<PrivateRoute />} path="/">
+            <Route element={<AuthProvider />} path="/">
               <Route element={<App />}>
                 <Route index element={<BookmarkPage />} />
                 <Route path="/profile" element={<ProfilePage />} />
               </Route>
             </Route>
-            {/* <Route path="/login" element={<LoginPage />} /> */}
             <Route path="/about" element={<AboutPage />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
-        </BrowserRouter>
-      </ThemeProvider>
+        </ThemeProvider>
+      </BrowserRouter>
     </StrictMode>
   );
 }

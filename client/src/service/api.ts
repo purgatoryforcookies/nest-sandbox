@@ -1,44 +1,3 @@
-export const signup = async <T extends object>(data: T) => {
-  const form = new URLSearchParams();
-
-  Object.keys(data).forEach((key) => {
-    form.append(key, data[key as keyof T] as string);
-  });
-
-  const resp = await fetch('/auth/signup', {
-    method: 'POST',
-    body: form,
-    redirect: 'follow',
-  });
-
-  if (resp.status !== 200) {
-    throw resp;
-  }
-  window.location.href = resp.url;
-
-  return;
-};
-export const login = async <T extends object>(data: T) => {
-  const form = new URLSearchParams();
-
-  Object.keys(data).forEach((key) => {
-    form.append(key, data[key as keyof T] as string);
-  });
-
-  const resp = await fetch('/auth/login', {
-    method: 'POST',
-    body: form,
-    redirect: 'follow',
-  });
-
-  if (resp.status !== 200) {
-    throw resp;
-  }
-  window.location.href = resp.url;
-
-  return;
-};
-
 export const fetchBookmarks = async <T>(): Promise<T> => {
   const resp = await fetch('/api/bookmark', {
     method: 'GET',
@@ -102,6 +61,7 @@ export const deleteBookmark = async (id: number) => {
   const resp = await fetch('/api/bookmark/' + id, {
     method: 'DELETE',
     credentials: 'same-origin',
+    redirect: 'follow',
   });
 
   if (resp.status !== 200) {
@@ -115,10 +75,11 @@ export const getMe = async <T>(): Promise<T> => {
     credentials: 'same-origin',
   });
 
-  if (resp.status !== 200) {
-    throw resp;
+  if (resp.status === 200) {
+    const body = await resp.json();
+    return body;
   }
-  const body = await resp.json();
 
-  return body;
+  window.location.href = '/auth/login';
+  throw resp;
 };

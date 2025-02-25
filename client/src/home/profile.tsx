@@ -1,84 +1,35 @@
-import { getMe } from '@/service/api';
-import { useEffect, useState } from 'react';
-import { jwtDecode } from 'jwt-decode';
-import moment from 'moment';
-
-type MeType = {
-  id: number;
-  created_at: string;
-  updated_at: string;
-  username: string;
-  first_name: string | null;
-  last_name: string | null;
-};
-
-type MeResponse = {
-  user: MeType;
-  token: string;
-};
+import { RandomProfilePicture } from '@/components/profilepicture';
+import { useAuth } from '@/login/privateRoute';
 
 export default function ProfilePage() {
-  const [me, setMe] = useState<MeResponse>();
-  const [error, setError] = useState('');
-
-  useEffect(() => {
-    const get = async () => {
-      try {
-        const data = await getMe<MeResponse>();
-        setMe(data);
-      } catch (error) {
-        if (error instanceof Response) {
-          const b = await error.json();
-          setError(b.message);
-        } else {
-          setError('Something went wrong');
-        }
-      }
-    };
-    get();
-  }, []);
-
-  const user = me?.user;
-  const token = me?.token;
-
-  if (!me || !token) {
-    return <p>Loading</p>;
-  }
-  const decodedToken = jwtDecode(token);
+  const { user } = useAuth();
 
   return (
-    <div className="size-full flex items-start gap-5 justify-start pt-10 flex-col overflow-auto px-5">
-      <div className="bg-background/90">
-        <h2 className="text-lg text-primary/70">Profile:</h2>
-        <pre>{JSON.stringify(user, null, 4)}</pre>
-      </div>
-      <div className="flex flex-col gap-5 pl-5 w-full">
-        <div className="max-w-[900px] break-all">
-          <h2 className="text-lg text-primary/70">Token:</h2>
-          <p className="">{token}</p>
+    <div className="size-full flex items-center justify-center pt-10 flex-col overflow-auto px-5">
+      <div className="grid grid-cols-6 grid-rows-[20px_20px_repeat(5,auto)] gap-4">
+        <div className="col-span-2 row-span-3">
+          <RandomProfilePicture />
         </div>
-        <div>
-          <h2 className="text-lg text-primary/70">Decoded:</h2>
-          <pre>{decodedToken ? JSON.stringify(decodedToken, null, 4) : ''}</pre>
+        <div className="col-span-4 col-start-3 pt-2">
+          <div className="flex flex-col leading-5">
+            <p className="text-lg">{user?.name}</p>
+            <p className="text-primary/60">@{user?.preferred_username}</p>
+          </div>
         </div>
-        <div>
-          <h2 className="text-lg text-primary/70">Expires</h2>
-          <section className="flex gap-2">
-            <p>
-              {new Date((decodedToken.exp || 0) * 1000).toLocaleTimeString()}
-            </p>
-            <p>
-              {'('}
-              {decodedToken
-                ? moment(new Date((decodedToken.exp || 0) * 1000)).fromNow()
-                : null}
-              {')'}
-            </p>
-          </section>
+        <div className="col-span-4 col-start-3 row-start-2 text-primary/70"></div>
+        <div className="col-span-6 row-start-4 ">
+          <h1 className="text-lg text-primary/70">User id:</h1>
+          {user?.sub}
+        </div>
+        <div className="col-span-6 row-start-5">
+          <h1 className="text-lg text-primary/70">Full name:</h1>
+          {user?.given_name} {user?.family_name}
+        </div>
+        <div className="col-span-6 row-start-6 flex flex-col gap-2">
+          <h1 className="text-lg text-primary/70">Email adresses:</h1>
+          {user?.email}
         </div>
       </div>
-
-      {error ? <p>{error}</p> : null}
     </div>
   );
 }
