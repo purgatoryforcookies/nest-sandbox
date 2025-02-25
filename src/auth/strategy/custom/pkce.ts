@@ -69,7 +69,7 @@ export class _OidcStrategyPKCE extends Strategy {
     req.session.pkce_code = code_verifier;
 
     const parameters: Record<string, string> = {
-      redirect_uri: this.callback_uri,
+      redirect_uri: `${this.callback_uri}`,
       scope: 'openid email',
       code_challenge,
       code_challenge_method: this.code_challenge_method,
