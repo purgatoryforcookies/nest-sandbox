@@ -13,18 +13,6 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model User {
-  id         Int      @id @default(autoincrement())
-  created_at DateTime @default(now())
-  updated_at DateTime @updatedAt
-  username   String   @unique()
-  hash       String
-
-  first_name String?
-  last_name  String?
-  bookmarks  Bookmark[]
-}
-
 model Bookmark {
   id         Int      @id @default(autoincrement())
   created_at DateTime @default(now())
@@ -34,6 +22,5 @@ model Bookmark {
   description String?
   link        String
 
-  user_id Int
-  user    User @relation(fields: [user_id], references: [id], onDelete: Cascade)
+  user_id String
 }
