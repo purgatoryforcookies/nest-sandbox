@@ -73,14 +73,14 @@ export default function Login(
                   {social.providers.map((p) => {
                     return (
                       <li key={p.alias} className="w-full">
-                        <Button className="w-full" variant={'outline'}>
+                        <Button className="w-full p-0" variant={'outline'}>
                           <a
                             id={`social-${p.alias}`}
                             type="button"
                             href={p.loginUrl}
-                            className="w-full flex justify-center"
+                            className="w-full flex justify-center h-full p-1"
                           >
-                            <div className="grid grid-cols-[25px_70px] items-center">
+                            <div className="grid grid-cols-[25px_70px] items-center ">
                               {Icon(p.alias)}
                               <span className="text-left">
                                 {kcSanitize(p.displayName)}
