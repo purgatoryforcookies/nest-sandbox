@@ -14,6 +14,12 @@ export default defineConfig({
         'all-other-versions': 'theme.jar',
       },
       themeName: 'custom-theme',
+      environmentVariables: [
+        {
+          name: 'HOME_URL',
+          default: 'https://sandbox.purgatoryforcookies.com',
+        },
+      ],
     }),
     react(),
     tailwindcss(),

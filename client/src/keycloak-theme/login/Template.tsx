@@ -41,6 +41,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
   const { msg, msgStr } = i18n;
 
   const { auth, url, message, isAppInitiatedAction } = kcContext;
+  const homeUrl = kcContext.properties.HOME_URL;
 
   useEffect(() => {
     document.title =
@@ -58,7 +59,7 @@ export default function Template(props: TemplateProps<KcContext, I18n>) {
       <div className="grid min-h-svh lg:grid-cols-2 bg-gradient-to-r from-[#0a0a0a] to-[#21190d] to-99% ">
         <div className="flex flex-col gap-4 p-6 md:p-10 relative">
           <div className="flex justify-center gap-2 md:justify-start">
-            <a href="#" className="flex items-center gap-2 font-medium">
+            <a href={homeUrl} className="flex items-center gap-2 font-medium">
               <div className="flex h-6 w-6 items-center justify-center rounded-md bg-primary text-primary-foreground">
                 <GalleryVerticalEnd className="size-4" />
               </div>

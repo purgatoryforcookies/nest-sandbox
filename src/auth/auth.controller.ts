@@ -34,12 +34,20 @@ export class AuthController {
     req.logOut((err) => {
       if (err) return next(err);
       const logOutUrl = this.config.get('KEYCLOAK_LOGOUT');
-      if (!logOutUrl) {
-        console.log('Warning! No logout url set, defaulting to home.');
+      const clientId = this.config.get('KEYCLOAK_CLIENT_ID');
+      const originatedFrom = req.headers.origin;
+      if (!logOutUrl || !originatedFrom || !clientId) {
+        console.log(
+          'Warning! No logout url / origin url / client_id, defaulting to home.',
+        );
         res.redirect('/');
         return;
       }
-      res.redirect(logOutUrl);
+      const redirecturi = encodeURIComponent(originatedFrom);
+      res.redirect(
+        logOutUrl +
+          `?client_id=${clientId}&post_logout_redirect_uri=${redirecturi}`,
+      );
     });
   }
 }
