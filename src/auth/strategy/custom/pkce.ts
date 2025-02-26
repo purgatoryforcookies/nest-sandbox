@@ -32,31 +32,48 @@ export class _OidcStrategyPKCE extends Strategy {
       const reqState = req.params.state;
       const base = req.protocol + '://' + req.headers.host + '/';
 
-      const tokens: oid.TokenEndpointResponse =
-        await oid.authorizationCodeGrant(this.config, new URL(req.url, base), {
-          pkceCodeVerifier: req.session.pkce_code,
-          expectedState: reqState,
-        });
+      try {
+        const tokens: oid.TokenEndpointResponse =
+          await oid.authorizationCodeGrant(
+            this.config,
+            new URL(req.url, base),
+            {
+              pkceCodeVerifier: req.session.pkce_code,
+              expectedState: reqState,
+            },
+          );
 
-      if (!tokens.id_token) {
-        this.error('ID Token is missing from the TokenEndpointResponse');
+        if (!tokens.id_token) {
+          this.error('ID Token is missing from the TokenEndpointResponse');
+          return;
+        }
+        const tokenIntrospectionSub = await oid.tokenIntrospection(
+          this.config,
+          tokens.id_token,
+        );
+
+        const userInfo = await oid.fetchUserInfo(
+          this.config,
+          tokens.access_token,
+          tokenIntrospectionSub?.sub || '',
+        );
+        this.success({
+          user: userInfo,
+          tokens: tokens,
+        });
+        return;
+      } catch (error) {
+        console.log('Error during token and user info exchange.');
+        console.log(error);
+        console.log('___________Request__________');
+        console.log({
+          req,
+        });
+        console.log('_____________________________');
+
+        this.error(error);
         return;
       }
-      const tokenIntrospectionSub = await oid.tokenIntrospection(
-        this.config,
-        tokens.id_token,
-      );
-
-      const userInfo = await oid.fetchUserInfo(
-        this.config,
-        tokens.access_token,
-        tokenIntrospectionSub?.sub || '',
-      );
-      this.success({
-        user: userInfo,
-        tokens: tokens,
-      });
-      return;
     }
 
     /**
@@ -69,11 +86,12 @@ export class _OidcStrategyPKCE extends Strategy {
     req.session.pkce_code = code_verifier;
 
     const parameters: Record<string, string> = {
-      redirect_uri: `${this.callback_uri}`,
+      redirect_uri: this.callback_uri,
       scope: 'openid email',
       code_challenge,
       code_challenge_method: this.code_challenge_method,
     };
+    console.log('Parameters:', parameters);
 
     const redirectTo = oid.buildAuthorizationUrl(this.config, parameters);
     this.redirect(redirectTo.toString());
