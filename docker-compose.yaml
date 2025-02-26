@@ -1,8 +1,7 @@
 services:
   db:
     image: postgres:17.4
-    ports:
-      - 5432:5432
+    env_file: '.env'
     environment:
       - PG_USER=${POSTGRES_USER}
       - PG_PASSWORD=${POSTGRES_USER}
@@ -12,6 +11,7 @@ services:
     container_name: backend
     build:
       context: .
+    env_file: '.env'
     ports:
       - 3000:3000
     environment:

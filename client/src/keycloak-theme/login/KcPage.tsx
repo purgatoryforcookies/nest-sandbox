@@ -8,6 +8,9 @@ import Template from './Template';
 const UserProfileFormFields = lazy(() => import('./UserProfileFormFields'));
 const Login = lazy(() => import('./pages/Login'));
 const Register = lazy(() => import('./pages/Register'));
+const LoginPageExpired = lazy(() => import('./pages/LoginPageExpired'));
+const IdpReviewUserProfile = lazy(() => import('./pages/IdpReviewUserProfile'));
+const LoginIdpLinkConfirm = lazy(() => import('./pages/LoginIdpLinkConfirm'));
 
 const doMakeUserConfirmPassword = true;
 
@@ -38,6 +41,32 @@ export default function KcPage(props: { kcContext: KcContext }) {
                 doMakeUserConfirmPassword={doMakeUserConfirmPassword}
               />
             );
+          case 'login-page-expired.ftl':
+            return (
+              <LoginPageExpired
+                {...{ kcContext, i18n, classes }}
+                Template={Template}
+                doUseDefaultCss={false}
+              />
+            );
+          case 'idp-review-user-profile.ftl':
+            return (
+              <IdpReviewUserProfile
+                {...{ kcContext, i18n, classes }}
+                Template={Template}
+                doUseDefaultCss={false}
+                UserProfileFormFields={UserProfileFormFields}
+                doMakeUserConfirmPassword={doMakeUserConfirmPassword}
+              />
+            );
+          case 'login-idp-link-confirm.ftl':
+            return (
+              <LoginIdpLinkConfirm
+                {...{ kcContext, i18n, classes }}
+                Template={Template}
+                doUseDefaultCss={false}
+              />
+            );
           default:
             return (
               <DefaultPage
@@ -45,7 +74,7 @@ export default function KcPage(props: { kcContext: KcContext }) {
                 i18n={i18n}
                 classes={classes}
                 Template={Template}
-                doUseDefaultCss={true}
+                doUseDefaultCss={false}
                 UserProfileFormFields={UserProfileFormFields}
                 doMakeUserConfirmPassword={doMakeUserConfirmPassword}
               />
