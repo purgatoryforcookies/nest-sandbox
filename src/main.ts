@@ -15,6 +15,11 @@ async function bootstrap() {
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
+  /**
+   * In production, we are sitting behind a reverse
+   * proxy. Trust it, so that the req parameters
+   * are correctly seen in src\auth\strategy\custom\pkce.ts
+   */
   app.set('trust proxy', 1);
 
   app.enableCors({

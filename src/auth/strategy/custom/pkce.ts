@@ -91,7 +91,6 @@ export class _OidcStrategyPKCE extends Strategy {
       code_challenge,
       code_challenge_method: this.code_challenge_method,
     };
-    console.log('Parameters:', parameters);
 
     const redirectTo = oid.buildAuthorizationUrl(this.config, parameters);
     this.redirect(redirectTo.toString());
