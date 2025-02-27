@@ -26,3 +26,6 @@ In `client/`
 
 7. Install deps `npm install`
 8. `npm run dev`
+
+\
+9. navigate to `localhost:3000`
