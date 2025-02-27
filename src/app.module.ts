@@ -9,6 +9,18 @@ import { AppService } from './app.service';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 
+const prodModules =
+  process.env['NODE_ENV'] !== 'development'
+    ? [
+        ServeStaticModule.forRoot({
+          rootPath: join(__dirname, '..', 'client', 'dist'),
+        }),
+      ]
+    : [];
+
+const devController =
+  process.env['NODE_ENV'] === 'development' ? [ProxyController] : [];
+
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
@@ -16,11 +28,9 @@ import { join } from 'path';
     UserModule,
     BookmarkModule,
     DaoModule,
-    ServeStaticModule.forRoot({
-      rootPath: join(__dirname, '..', 'client', 'dist'),
-    }),
+    ...prodModules,
   ],
-  // controllers: [ProxyController],
+  controllers: [...devController],
   providers: [AppService],
 })
 export class AppModule {}

@@ -16,6 +16,7 @@ RUN npm run build
 FROM node:22-alpine AS release
 ENV NODE_ENV=production
 
+
 WORKDIR /usr/app
 COPY --from=base /usr/app/client/dist client/dist
 COPY --from=base /usr/app/package*.json .

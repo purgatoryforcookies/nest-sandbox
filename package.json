@@ -1,10 +1,10 @@
 {
-  "name": "nest-playground",
+  "name": "nest-sandbox",
   "version": "0.0.1",
-  "description": "",
-  "author": "",
+  "description": "Sandbox to run experiments in a lightweight environment",
+  "author": "purgatoryforcookies",
   "private": true,
-  "license": "UNLICENSED",
+  "license": "MIT",
   "scripts": {
     "prisma:migrate": "prisma migrate deploy",
     "build": "nest build",
@@ -17,7 +17,6 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
-    "@auth0/auth0-spa-js": "^2.1.3",
     "@nestjs/common": "^11.0.1",
     "@nestjs/config": "^4.0.0",
     "@nestjs/core": "^11.0.1",

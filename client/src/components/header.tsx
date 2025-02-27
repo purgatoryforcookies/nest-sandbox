@@ -1,26 +1,25 @@
-import { Link } from 'react-router';
+import { useNavigate } from 'react-router';
 import { Button } from './ui/button';
 
 const Header = () => {
+  const navigate = useNavigate();
+
   return (
     <nav className="border-b-2 flex justify-center">
       <div className="w-full flex justify-between py-5 px-10 max-w-[1200px]">
         <a href="/">
           <p>Sandbox</p>
         </a>
-        <ul className="flex gap-5 items-center">
+        <ul className="flex gap-3 items-center">
           <li>
-            <Link to={'/'} className="hover:text-primary hover:underline">
+            <Button onClick={() => navigate('/')} variant={'link'}>
               Home
-            </Link>
+            </Button>
           </li>
           <li>
-            <Link
-              to={'/profile'}
-              className="hover:text-primary hover:underline"
-            >
+            <Button onClick={() => navigate('/profile')} variant={'link'}>
               Profile
-            </Link>
+            </Button>
           </li>
           <li>
             <form action="/auth/logout" method="POST">
