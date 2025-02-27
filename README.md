@@ -11,7 +11,7 @@ Once user is authenticated, they can store bookmarks in the site.
 Steps to start the development environment:
 
 1. `git clone`
-2. Populate the `.env.example`
+2. Populate the `.env.example` into `.env`
 
 \
 In `/`:
