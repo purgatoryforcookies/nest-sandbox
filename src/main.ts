@@ -8,6 +8,7 @@ import * as passport from 'passport';
 
 async function bootstrap() {
   const sessionSecret = process.env['SESSION_SECRET'];
+  const isdev = process.env['NODE_ENV'] === 'development';
 
   if (!sessionSecret) {
     throw new Error('No secret set for session');
@@ -43,8 +44,9 @@ async function bootstrap() {
       store: new session.MemoryStore(),
       rolling: true,
       cookie: {
-        maxAge: 30 * 60 * 1000,
+        maxAge: 10 * 60 * 1000, // 10 minutes
         httpOnly: true,
+        secure: isdev ? false : true,
       },
     }),
   );
