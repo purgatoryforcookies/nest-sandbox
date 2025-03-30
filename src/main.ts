@@ -9,11 +9,15 @@ async function bootstrap() {
     console.log('Development mode', isdev);
   }
 
+  const corsOrigins = isdev
+    ? ['http://localhost:3000', 'https://sandbox.purgatoryforcookies.com/']
+    : ['https://sandbox.purgatoryforcookies.com/'];
+
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   app.enableCors({
-    origin: '*',
-    methods: ['*'],
+    origin: corsOrigins,
+    methods: ['GET', 'POST', 'DELETE', 'PATCH'],
     credentials: true,
   });
 
