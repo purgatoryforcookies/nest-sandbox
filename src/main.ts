@@ -9,9 +9,14 @@ async function bootstrap() {
     console.log('Development mode', isdev);
   }
 
-  const corsOrigins = isdev
-    ? ['http://localhost:3000', 'https://sandbox.purgatoryforcookies.com/']
-    : ['https://sandbox.purgatoryforcookies.com/'];
+  const corsOrigins = [
+    'https://sandbox.purgatoryforcookies.com',
+    'https://key.purgatoryforcookies.com',
+  ];
+
+  if (isdev) {
+    corsOrigins.push('http://localhost:3000');
+  }
 
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
