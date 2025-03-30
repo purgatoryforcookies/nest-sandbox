@@ -8,6 +8,8 @@ services:
       - PG_USER=${POSTGRES_USER}
       - PG_PASSWORD=${POSTGRES_USER}
       - PG_DB=${POSTGRES_DB}
+    volumes:
+      - pgdata:/var/lib/postgresql/data
   backend:
     image: sandbox
     container_name: backend
@@ -26,3 +28,6 @@ services:
       - AUTH_ISSUER=${AUTH_ISSUER}
       - AUTH_AUDIENCE=${AUTH_AUDIENCE}
       - DATABASE_URL=${DATABASE_URL}
+
+volumes:
+  pgdata:
