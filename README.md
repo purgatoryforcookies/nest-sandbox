@@ -1,7 +1,7 @@
 # Nestjs sandbox
 
 Sandbox creates real users into keycloak for authentication and authorization.
-Few identity providers have been configured. Uses regular OIDC flow for token exchange (PKCE).
+Few identity providers have been configured. Uses authorization code flow with pkce on client side.
 
 Users are cleaned from the databases on a regular basis.
 Once user is authenticated, they can store bookmarks in the site.
@@ -24,6 +24,7 @@ In `/`:
 \
 In `client/`
 
+6.5. Populate `.env.example` into `.env`
 7. Install deps `npm install`
 8. `npm run dev`
 
