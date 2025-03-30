@@ -1,20 +1,25 @@
-import { createParamDecorator, ForbiddenException } from '@nestjs/common';
-import { ExecutionContextHost } from '@nestjs/core/helpers/execution-context-host';
+import {
+  createParamDecorator,
+  ExecutionContext,
+  InternalServerErrorException,
+} from '@nestjs/common';
+import { Request } from 'express';
 
+/**
+ * GetUser returns req.sub field from request.
+ *
+ * sub field is injected from access token to the request
+ * in AuthGuard, and therefore this parameter decorator
+ * cannot be used without it.
+ */
 export const GetUser = createParamDecorator(
-  (
-    field: keyof Express.User['user'] | undefined,
-    ctx: ExecutionContextHost,
-  ) => {
-    const request = ctx.switchToHttp().getRequest<Express.Request>();
+  (data: unknown, ctx: ExecutionContext) => {
+    const request = ctx.switchToHttp().getRequest<Request>();
+    const { sub } = request;
 
-    if (!request.user) {
-      throw new ForbiddenException('User not found');
+    if (!sub) {
+      throw new InternalServerErrorException('Missing sub field!');
     }
-
-    if (field) {
-      return request.user.user[field];
-    }
-    return request.user.user;
+    return sub;
   },
 );

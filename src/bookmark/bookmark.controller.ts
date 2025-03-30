@@ -11,35 +11,36 @@ import {
 } from '@nestjs/common';
 import { BookmarDto, EditBookmarkDto } from './dto';
 import { BookmarkService } from './bookmark.service';
-import { GetUser } from 'src/auth/decorator';
-import { LoginGuard } from 'src/auth/guard/login.guard';
+import { GetUser } from 'src/auth/decorator/get-user.decorator';
+import { AuthGuard } from 'src/auth/guards/auth.guard';
+import { Roles } from 'src/auth/decorator/roles.decorator';
 
 @Controller('api/bookmark')
+@UseGuards(AuthGuard)
+@Roles(['user'])
 export class BookmarkController {
   constructor(private bookmarkService: BookmarkService) {}
 
   @Get()
-  async getAll(@GetUser('sub') userId: string) {
-    return await this.bookmarkService.getAll(userId);
+  getAll(@GetUser() userId: string) {
+    return this.bookmarkService.getAll(userId);
   }
 
   @Get(':id')
-  async getById(@Param('id', ParseIntPipe) id: number) {
+  getById(@Param('id', ParseIntPipe) id: number) {
     return this.bookmarkService.get(id);
   }
 
   @Post()
-  async create(@GetUser('sub') id: string, @Body() dto: BookmarDto) {
+  create(@GetUser() id: string, @Body() dto: BookmarDto) {
     return this.bookmarkService.add(id, dto);
   }
 
   @Patch(':id')
-  async edit(
-    @Param('id', ParseIntPipe) id: number,
-    @Body() dto: EditBookmarkDto,
-  ) {
+  edit(@Param('id', ParseIntPipe) id: number, @Body() dto: EditBookmarkDto) {
     return this.bookmarkService.edit(id, dto);
   }
+
   @Delete(':id')
   delete(@Param('id', ParseIntPipe) id: number) {
     return this.bookmarkService.delete(id);

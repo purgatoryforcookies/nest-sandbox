@@ -1,8 +1,10 @@
 import { useNavigate } from 'react-router';
 import { Button } from './ui/button';
+import { useOidc } from '@/service/oidc';
 
 const Header = () => {
   const navigate = useNavigate();
+  const { logout } = useOidc();
 
   return (
     <nav className="border-b-2 flex justify-center">
@@ -22,11 +24,12 @@ const Header = () => {
             </Button>
           </li>
           <li>
-            <form action="/auth/logout" method="POST">
-              <Button type="submit" variant={'link'}>
-                Logout
-              </Button>
-            </form>
+            <Button
+              variant={'link'}
+              onClick={() => logout({ redirectTo: 'home' })}
+            >
+              Logout
+            </Button>
           </li>
         </ul>
       </div>

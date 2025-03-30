@@ -1,8 +1,8 @@
+import { fetchWithAuth } from './oidc';
+
 export const fetchBookmarks = async <T>(): Promise<T> => {
-  const resp = await fetch('/api/bookmark', {
+  const resp = await fetchWithAuth('/api/bookmark', {
     method: 'GET',
-    credentials: 'same-origin',
-    redirect: 'follow',
   });
 
   if (resp.status !== 200) {
@@ -15,14 +15,13 @@ export const fetchBookmarks = async <T>(): Promise<T> => {
 };
 
 export const addbookmark = async <T>(): Promise<T> => {
-  const resp = await fetch('/api/bookmark', {
+  const resp = await fetchWithAuth('/api/bookmark', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
     body: JSON.stringify({ title: 'new title', link: 'new link' }),
-    credentials: 'same-origin',
   });
 
   if (resp.status !== 201) {
@@ -38,14 +37,13 @@ export const editBookmark = async <T>(
   id: number,
   data: Partial<T>,
 ): Promise<T> => {
-  const resp = await fetch('/api/bookmark/' + id, {
+  const resp = await fetchWithAuth('/api/bookmark/' + id, {
     method: 'PATCH',
     headers: {
       'Content-Type': 'application/json',
       Accept: 'application/json',
     },
     body: JSON.stringify(data),
-    credentials: 'same-origin',
   });
 
   if (resp.status !== 200) {
@@ -58,28 +56,12 @@ export const editBookmark = async <T>(
 };
 
 export const deleteBookmark = async (id: number) => {
-  const resp = await fetch('/api/bookmark/' + id, {
+  const resp = await fetchWithAuth('/api/bookmark/' + id, {
     method: 'DELETE',
-    credentials: 'same-origin',
-    redirect: 'follow',
   });
 
   if (resp.status !== 200) {
     throw resp;
   }
   return;
-};
-export const getMe = async <T>(): Promise<T> => {
-  const resp = await fetch('/api/user/me', {
-    method: 'GET',
-    credentials: 'same-origin',
-  });
-
-  if (resp.status === 200) {
-    const body = await resp.json();
-    return body;
-  }
-
-  window.location.href = '/auth/login';
-  throw resp;
 };

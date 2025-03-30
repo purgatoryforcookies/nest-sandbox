@@ -1,17 +1,19 @@
-import { Injectable, NotFoundException, UseGuards } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { DaoService } from 'src/dao/dao.service';
 import { BookmarDto, EditBookmarkDto } from './dto';
 import { PrismaClientKnownRequestError } from '@prisma/client/runtime/library';
-import { LoginGuard } from 'src/auth/guard/login.guard';
 
 const PRISMA_NOT_FOUND_CODE = 'P2025';
 
 @Injectable()
-@UseGuards(LoginGuard)
 export class BookmarkService {
   constructor(private dao: DaoService) {}
 
   async getAll(id: string) {
+    if (!id) {
+      throw new NotFoundException('No id provided');
+    }
+
     return this.dao.bookmark.findMany({
       where: {
         user_id: id,
@@ -79,30 +81,5 @@ export class BookmarkService {
       }
       throw error;
     }
-  }
-
-  /**
-   * Adds a few example bookmarks for new users
-   */
-  boilerplate(userId: string) {
-    return this.dao.bookmark.createMany({
-      data: [
-        {
-          title: 'Example bookmark',
-          link: 'https://google.com',
-          user_id: userId,
-        },
-        {
-          title: 'Example bookmark',
-          link: 'https://yahoo.com',
-          user_id: userId,
-        },
-        {
-          title: 'Example bookmark',
-          link: 'https://youtube.com',
-          user_id: userId,
-        },
-      ],
-    });
   }
 }
