@@ -46,7 +46,14 @@ export class AuthGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     if (!this.certsUrl) {
-      throw new Error('No certs url set!');
+      try {
+        await this.init();
+      } catch (error) {
+        console.log(error);
+        throw new Error(
+          'No certs url was set and new one could not be retrieved.',
+        );
+      }
     }
 
     const request = context.switchToHttp().getRequest<Request>();
